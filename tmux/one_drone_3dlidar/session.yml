@@ -1,0 +1,71 @@
+# do not modify these
+root: ./
+name: simulation
+socket_name: mrs
+attach: false
+tmux_options: -f /etc/ctu-mrs/tmux.conf
+# you can modify these
+pre_window: export UAV_NAME=uav1; export RUN_TYPE=simulation; export UAV_TYPE=x500; source ./config/_env/env.sh
+startup_window: hw_api
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+  - gazebo:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForRos; roslaunch mrs_uav_gazebo_simulation simulation.launch world_name:=forest gui:=false
+        - export UAV_NAME=uav1; waitForGazebo; rosservice call /mrs_drone_spawner/spawn "1 --$UAV_TYPE --pos-file $ROS_CONFIG_PATH/simulation/position_drones.yaml --enable-rangefinder --enable-ouster model:=OS0-128 use_gpu:=True horizontal_samples:=128 update_rate:=10"
+        - export UAV_NAME=uav1; waitForControl; gz camera -c gzclient_camera -f $UAV_NAME; history -s gz camera -c gzclient_camera -f $UAV_NAME
+  - status:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHw; roslaunch mrs_uav_status status.launch
+  - hw_api:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForTime; roslaunch mrs_uav_px4_api api.launch
+  - core:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHw; roslaunch mrs_uav_core core.launch debug:=false
+          platform_config:=`rospack find mrs_uav_gazebo_simulation`/config/mrs_uav_system/$UAV_TYPE.yaml
+          custom_config:=./config/custom_config.yaml
+          world_config:=./config/world_config.yaml
+          network_config:=./config/network_config.yaml
+  - gnss_status:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForTime; roslaunch mrs_openswarm_utils gnss_status_verifier.launch
+  - navsat:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForTime; roslaunch $ROS_LAUNCH_PATH/navsat.launch
+  - dcl_slam:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHw; roslaunch $ROS_LAUNCH_PATH/dcl_slam/run.launch
+  - octomap:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; roslaunch $ROS_LAUNCH_PATH/mrs_mapplan_octomapping.launch standalone:=false config_octomap_server:=./config/octomap/octomap_server.yaml config_octomap_planner:=./config/octomap/octomap_planner.yaml config_pcl_filter_ouster:=./config/octomap/ouster_filter_mapping.yaml world_frame_id:=uav1/liosam_origin
+  - takeoff:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForHw; roslaunch mrs_uav_autostart automatic_start.launch
+        - 'waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 2; rosservice call /$UAV_NAME/hw_api/offboard'
+  - goto:
+      layout: tiled
+      panes:
+        - 'history -s rosservice call /$UAV_NAME/octomap_planner/goto \"goal: \[0.0, 0.0, 1.5, 0.0\]\"'
+  - rviz:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; rosrun rviz rviz -d ./rviz/rviz.rviz
+        - export UAV_NAME=uav1; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav1; waitForControl; roslaunch mrs_rviz_plugins rviz_interface.launch
+  - layout:
+      layout: tiled
+      panes:
+        - waitForControl; sleep 3; ~/.i3/layout_manager.sh ./layout.json

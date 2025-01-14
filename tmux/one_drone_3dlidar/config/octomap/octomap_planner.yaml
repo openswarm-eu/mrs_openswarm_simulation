@@ -1,0 +1,8 @@
+safe_obstacle_distance: 1.4 # [m]
+euclidean_distance_cutoff: 1.4 # [m]
+
+subt_planner:
+  use: false
+
+trajectory_generator:
+  input_trajectory_length: 4.0 # [s] (the rest of path will be ignored during trajectory generation)

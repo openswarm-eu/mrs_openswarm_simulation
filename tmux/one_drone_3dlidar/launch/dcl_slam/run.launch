@@ -1,0 +1,20 @@
+<launch>
+	<arg name="set_lio_type" default="1"/> <!-- 1 for LIO-SAM
+												2 for FAST-LIO2 -->
+	<param name="/number_of_robots" value="1"/>
+	<param name="/name_list" value="true"/>
+	<param name="/mapFrameAsChild" value="true"/>
+	
+	<param name="/robot_names" type="yaml" value="[uav1]"/>
+
+	<arg name="set_respawn_value" default="false"/>  <!-- boolean: true, false -->
+
+	<!-- Robot list -->
+  	<include file="$(env ROS_LAUNCH_PATH)/dcl_slam/single_ugv.launch">
+    	<arg name="robotPrefix" value="uav1"/>
+		<arg name="respawnValue" value="$(arg set_respawn_value)"/>
+		<arg name="lioType" value="$(arg set_lio_type)"/>
+
+  	</include>
+
+</launch>
