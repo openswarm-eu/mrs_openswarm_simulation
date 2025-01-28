@@ -1,0 +1,18 @@
+<launch>
+	<arg name="set_lio_type" default="1"/> <!-- 1 for LIO-SAM, 2 for FAST-LIO2 -->
+	<arg name="set_respawn_value" default="false"/>
+	<arg name="set_robot_prefix" default="$(optenv UAV_NAME)"/>
+
+	<param name="/number_of_robots" value="6"/>
+	<param name="/name_list" value="true"/>
+	<param name="/mapFrameAsChild" value="true"/>
+	<param name="/robot_names" type="yaml" value="[uav1, uav2, uav3, uav4, uav5, uav6]"/>
+
+  	<include file="$(find mrs_openswarm_simulation)/tmux/three_drones_swarm/launch/dcl-slam/single_ugv_mrs.launch">
+    	<arg name="robotPrefix" value="$(arg set_robot_prefix)"/>
+		<arg name="respawnValue" value="$(arg set_respawn_value)"/>
+		<arg name="lioType" value="$(arg set_lio_type)"/>
+
+  	</include>
+
+</launch>

@@ -1,0 +1,129 @@
+# do not modify these
+root: ./
+name: simulation
+socket_name: mrs
+attach: false
+tmux_options: -f /etc/ctu-mrs/tmux.conf
+# you can modify these export ROS_MASTER_URI='http://192.168.8.157:11311'; export ROS_IP='192.168.8.157';
+pre_window: export RUN_TYPE=simulation; export UAV_TYPE=f450; export PLATFORM_CONFIG=`rospack find mrs_uav_gazebo_simulation`/config/mrs_uav_system/$UAV_TYPE.yaml; export CUSTOM_CONFIG=./config/custom_config.yaml; export WORLD_CONFIG=./config/world_config.yaml; export NETWORK_CONFIG=./config/network_config.yaml
+startup_window: status
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+  - gazebo:
+      layout: tiled
+      panes:
+        - waitForRos; roslaunch mrs_uav_gazebo_simulation simulation.launch world_name:=forest gui:=false  # forest | mrs_city | grass_plane
+        - waitForGazebo; rosservice call /mrs_drone_spawner/spawn "1 2 3 4 5 6 --$UAV_TYPE --pos-file $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/config/position_drones.yaml --enable-rangefinder --enable-ouster model:=OS0-128 use_gpu:=True horizontal_samples:=128 update_rate:=5 --enable-ground-truth"
+  - status:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHw; roslaunch mrs_uav_status status.launch
+        - export UAV_NAME=uav2; waitForHw; roslaunch mrs_uav_status status.launch
+        - export UAV_NAME=uav3; waitForHw; roslaunch mrs_uav_status status.launch
+        - export UAV_NAME=uav4; waitForHw; roslaunch mrs_uav_status status.launch
+        - export UAV_NAME=uav5; waitForHw; roslaunch mrs_uav_status status.launch
+        - export UAV_NAME=uav6; waitForHw; roslaunch mrs_uav_status status.launch
+  - hw_api:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForTime; roslaunch mrs_uav_px4_api api.launch
+        -  export UAV_NAME=uav2; waitForTime; roslaunch mrs_uav_px4_api api.launch
+        -  export UAV_NAME=uav3; waitForTime; roslaunch mrs_uav_px4_api api.launch
+        -  export UAV_NAME=uav4; waitForTime; roslaunch mrs_uav_px4_api api.launch
+        -  export UAV_NAME=uav5; waitForTime; roslaunch mrs_uav_px4_api api.launch
+        -  export UAV_NAME=uav6; waitForTime; roslaunch mrs_uav_px4_api api.launch
+  - core:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHw; roslaunch mrs_uav_core core.launch
+        - export UAV_NAME=uav2; waitForHw; roslaunch mrs_uav_core core.launch
+        - export UAV_NAME=uav3; waitForHw; roslaunch mrs_uav_core core.launch
+        - export UAV_NAME=uav4; waitForHw; roslaunch mrs_uav_core core.launch
+        - export UAV_NAME=uav5; waitForHw; roslaunch mrs_uav_core core.launch
+        - export UAV_NAME=uav6; waitForHw; roslaunch mrs_uav_core core.launch
+  - tf_connector:
+      layout: tiled
+      panes:
+        - waitForTime; roslaunch mrs_tf_connector tf_connector.launch custom_config:=./config/tf_connector_swarm.yaml
+  - automatic_start:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+        - export UAV_NAME=uav2; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+        - export UAV_NAME=uav3; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+        - export UAV_NAME=uav4; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+        - export UAV_NAME=uav5; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+        - export UAV_NAME=uav6; waitForControl; roslaunch mrs_uav_autostart automatic_start.launch
+  - takeoff:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 3; rosservice call /$UAV_NAME/hw_api/offboard
+        - export UAV_NAME=uav2; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 4; rosservice call /$UAV_NAME/hw_api/offboard
+        - export UAV_NAME=uav3; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 5; rosservice call /$UAV_NAME/hw_api/offboard
+        - export UAV_NAME=uav4; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 6; rosservice call /$UAV_NAME/hw_api/offboard
+        - export UAV_NAME=uav5; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 7; rosservice call /$UAV_NAME/hw_api/offboard
+        - export UAV_NAME=uav6; waitForControl; rosservice call /$UAV_NAME/hw_api/arming 1; sleep 8; rosservice call /$UAV_NAME/hw_api/offboard
+  - gnss_status:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+        -  export UAV_NAME=uav2; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+        -  export UAV_NAME=uav3; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+        -  export UAV_NAME=uav4; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+        -  export UAV_NAME=uav5; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+        -  export UAV_NAME=uav6; waitForHw; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/gnss_status_verifier.launch
+  - navsat:
+      layout: tiled
+      panes:
+        -  export UAV_NAME=uav1; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+        -  export UAV_NAME=uav2; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+        -  export UAV_NAME=uav3; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+        -  export UAV_NAME=uav4; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+        -  export UAV_NAME=uav5; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+        -  export UAV_NAME=uav6; waitForTime; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/navsat.launch
+  - dcl_slam:
+      layout: tiled
+      panes: 
+        - export UAV_NAME=uav1; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+        - export UAV_NAME=uav2; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+        - export UAV_NAME=uav3; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+        - export UAV_NAME=uav4; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+        - export UAV_NAME=uav5; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+        - export UAV_NAME=uav6; waitForHw; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/dcl-slam/run_single.launch
+  # - octomap:
+  #     layout: tiled
+  #     panes:
+  #       - export UAV_NAME=uav1; waitForControl; sleep 2; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_mapplan_octomapping.launch standalone:=false config_octomap_server:=./config/octomap/octomap_server.yaml config_octomap_planner:=./config/octomap/octomap_planner.yaml config_pcl_filter_ouster:=./config/octomap/ouster_filter_mapping.yaml world_frame_id:=uav1/liosam_origin
+  #       - export UAV_NAME=uav2; waitForControl; sleep 4; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_mapplan_octomapping.launch standalone:=false config_octomap_server:=./config/octomap/octomap_server.yaml config_octomap_planner:=./config/octomap/octomap_planner.yaml config_pcl_filter_ouster:=./config/octomap/ouster_filter_mapping.yaml world_frame_id:=uav2/liosam_origin
+  #       - export UAV_NAME=uav3; waitForControl; sleep 6; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_mapplan_octomapping.launch standalone:=false config_octomap_server:=./config/octomap/octomap_server.yaml config_octomap_planner:=./config/octomap/octomap_planner.yaml config_pcl_filter_ouster:=./config/octomap/ouster_filter_mapping.yaml world_frame_id:=uav3/liosam_origin
+  # - swarm:
+  #     layout: tiled
+  #     panes:
+  #       - export UAV_NAME=uav1; waitForTime; sleep 3; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_swarm_formation.launch drone_id:=0 odom_topic:=/$UAV_NAME/estimation_manager/odom_main
+  #       - export UAV_NAME=uav2; waitForTime; sleep 3; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_swarm_formation.launch drone_id:=1 odom_topic:=/$UAV_NAME/estimation_manager/odom_main
+  #       - export UAV_NAME=uav3; waitForTime; sleep 3; roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/mrs_swarm_formation.launch drone_id:=2 odom_topic:=/$UAV_NAME/estimation_manager/odom_main
+  #       - export UAV_NAME=uav1; waitForTime; sleep 3; history -s roslaunch $(rospack find mrs_openswarm_simulation)/tmux/six_drones_swarm/launch/pose_generator.launch
+  # # - MapGlobalService:
+  # #     layout: tiled
+  # #     panes:
+  # #       - export UAV_NAME=uav1; waitForControl; roslaunch mrs_ingeniarius_utils map_global_service.launch
+  # #       - export UAV_NAME=uav2; waitForControl; roslaunch mrs_ingeniarius_utils map_global_service.launch
+  # #       - export UAV_NAME=uav3; waitForControl; roslaunch mrs_ingeniarius_utils map_global_service.launch
+  # #       - 'history -s rosservice call /uav1/map_global_generation/save_map '
+  - rviz:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; rosrun rviz rviz -d ./config/rviz/swarm.rviz
+        - export UAV_NAME=uav1; waitForControl; roslaunch mrs_rviz_plugins rviz_interface.launch
+  - rviz_uav_models:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav2; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav3; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav4; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav5; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
+        - export UAV_NAME=uav6; waitForControl; roslaunch mrs_rviz_plugins load_robot.launch
