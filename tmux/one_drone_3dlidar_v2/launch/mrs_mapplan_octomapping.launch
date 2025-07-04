@@ -19,8 +19,7 @@
   <arg name="config_octomap_visualizer" default="" />
 
   <!-- ING configs -->
-  <!-- <arg name="topic_3d_lidar_in" default="lio_sam/deskew/cloud_deskewed" /> -->
-  <!-- <arg name="topic_3d_lidar_in" default="os_cloud_nodelet/points" /> -->
+  <arg name="topic_3d_lidar_in" default="lio_sam/deskew/cloud_deskewed" />
 
   <!-- NodeletManager //{ -->
 
@@ -43,7 +42,7 @@
     <arg name="custom_config" value="$(arg config_pcl_filter_ouster)" />
     <arg name="debug" value="false" />
     <arg name="name_suffix" value="ouster" />
-    <!-- <arg name="topic_3d_lidar_in" value="$(arg topic_3d_lidar_in)" /> -->
+    <arg name="topic_3d_lidar_in" value="$(arg topic_3d_lidar_in)" />
 
   </include>  
 
