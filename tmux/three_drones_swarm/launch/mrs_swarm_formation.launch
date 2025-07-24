@@ -10,6 +10,7 @@
 
       <param name="manager/name_list" value="true"/>
       <param name="manager/robot_names" type="yaml" value="[uav1, uav2, uav3]"/>
+      <param name="manager/robot_name" value="$(arg UAV_NAME)"/>
 
       <param name="drone_id"  value="$(arg drone_id)"/>
       

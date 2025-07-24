@@ -7,14 +7,14 @@ uav1:
 
 uav2:
   id: 2
-  x: 5.0
-  y: 0.0
+  x: 0.0
+  y: 5.0
   z: 0.0
   heading: 0.0
 
 uav3:
   id: 3
   x: 0.0
-  y: 5.0
+  y: -5.0
   z: 0.0
   heading: 0.0

@@ -11,7 +11,7 @@
         <rosparam file="$(optenv ROS_CONFIG_PATH)/navsat/navsat_$(env UAV_NAME).yaml" command="load" />
 
         <!-- Map -->
-        <node pkg="tf2_ros" type="static_transform_publisher" name="$(env UAV_NAME)_odom_to_map" 	args="0 0 0 0 0 0 $(env UAV_NAME)/map_navsat $(env UAV_NAME)/odom_"/>
+        <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="$(env UAV_NAME)_odom_to_map" 	args="0 0 0 0 0 0 $(env UAV_NAME)/map_navsat $(env UAV_NAME)/odom_"/> -->
 
         <!-- EKF GPS-->
         <node pkg="robot_localization" type="ekf_localization_node" name="ekf_gps" respawn="true">

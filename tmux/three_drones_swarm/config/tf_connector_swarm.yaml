@@ -3,23 +3,23 @@ connecting_frame_id: "common_origin"
 
 # these are the tf subtrees to be connected through the respective root frames so that the equal frames are equal
 connections:
+  # - root_frame_id: "uav1/fcu"
+  #   equal_frame_id: "uav1/world_origin"
+
+  # - root_frame_id: "uav2/fcu"
+  #   equal_frame_id: "uav2/world_origin"
+
+  # - root_frame_id: "uav3/fcu"
+  #   equal_frame_id: "uav3/world_origin"
+
   - root_frame_id: "uav1/fcu"
-    equal_frame_id: "uav1/world_origin"
+    equal_frame_id: "uav1/stable_origin"
 
   - root_frame_id: "uav2/fcu"
-    equal_frame_id: "uav2/world_origin"
+    equal_frame_id: "uav2/stable_origin"
 
   - root_frame_id: "uav3/fcu"
-    equal_frame_id: "uav3/world_origin"
-
-  - root_frame_id: "uav1/map_navsat"
-    equal_frame_id: "uav1/liosam_origin"
-
-  - root_frame_id: "uav2/map_navsat"
-    equal_frame_id: "uav2/liosam_origin"
-
-  - root_frame_id: "uav3/map_navsat"
-    equal_frame_id: "uav3/liosam_origin"
+    equal_frame_id: "uav3/stable_origin"
 
   # you can add further connections here:
   # - root_frame_id: "another_root"

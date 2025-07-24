@@ -14,3 +14,5 @@ wait_takeoff: false
 wait_odom: true
 
 path_number: -1  # if -1, all poses are considered
+
+have_swarm_relative_pts_: true  # if false, the swarm will use the global goal position
